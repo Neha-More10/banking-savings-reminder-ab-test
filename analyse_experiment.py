@@ -1,6 +1,7 @@
 from pathlib import Path
 from math import sqrt, erfc
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 # Load the data we generated.
@@ -111,3 +112,63 @@ print(
     "\nThese results describe simulated data. "
     "They do not demonstrate an effect in real banking customers."
 )    
+
+# Create a folder to store the chart.
+results_folder = Path(__file__).resolve().parent / "results"
+results_folder.mkdir(exist_ok=True)
+
+# Use the rates calculated from our dataset.
+labels = ["A: No reminder", "B: Savings reminder"]
+rates = [rate_a * 100, rate_b * 100]
+
+fig, ax = plt.subplots(figsize=(8, 5))
+
+bars = ax.bar(
+    labels,
+    rates,
+    color=["#64748B", "#0F766E"],
+    width=0.55,
+)
+
+# Display the percentage above each bar.
+ax.bar_label(bars, fmt="%.2f%%", padding=5)
+
+ax.set_title(
+    "Does a savings reminder increase deposits?",
+    fontsize=14,
+    pad=18,
+)
+ax.set_ylabel("Customers who made a deposit (%)")
+ax.set_ylim(0, max(rates) + 8)
+
+ax.spines["top"].set_visible(False)
+ax.spines["right"].set_visible(False)
+ax.set_axisbelow(True)
+ax.grid(axis="y", alpha=0.2)
+
+# Show the estimated difference and its uncertainty.
+fig.text(
+    0.5,
+    0.07,
+    f"B minus A: {rate_difference * 100:+.2f} percentage points"
+    f" | 95% CI: {ci_lower * 100:+.2f} to {ci_upper * 100:+.2f}",
+    ha="center",
+    fontsize=10,
+)
+
+fig.text(
+    0.5,
+    0.02,
+    "Simulated customer data • 30-day observation period",
+    ha="center",
+    fontsize=9,
+    color="#555555",
+)
+
+fig.tight_layout(rect=[0, 0.14, 1, 1])
+
+chart_path = results_folder / "deposit_rate_comparison.png"
+fig.savefig(chart_path, dpi=200, bbox_inches="tight")
+plt.close(fig)
+
+print(f"\nChart saved to: {chart_path}")
