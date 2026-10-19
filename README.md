@@ -56,6 +56,8 @@ The test uses a 5% significance threshold.
 - Two-sided p-value: 0.000141.
 - Approximate 95% confidence interval: +1.53 to +4.79 percentage points.
 
+![Deposit rates for customers with and without a savings reminder](results/deposit_rate_comparison.png)
+
 ## Understanding the results
 
 The p-value describes how unusual a difference at least this extreme

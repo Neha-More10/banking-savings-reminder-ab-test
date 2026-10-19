@@ -172,3 +172,26 @@ fig.savefig(chart_path, dpi=200, bbox_inches="tight")
 plt.close(fig)
 
 print(f"\nChart saved to: {chart_path}")
+
+
+# Check whether group sizes are consistent with a 50/50 assignment.
+total_customers = n_a + n_b
+expected_per_group = total_customers / 2
+
+allocation_z = (
+    (n_a - expected_per_group)
+    / sqrt(total_customers * 0.5 * 0.5)
+)
+
+allocation_p_value = erfc(abs(allocation_z) / sqrt(2))
+
+print("\nRandom assignment check:")
+print(f"Expected customers per group: {expected_per_group:,.0f}")
+print(f"Actual: A = {n_a:,}, B = {n_b:,}")
+print(f"Allocation p-value: {allocation_p_value:.4f}")
+
+# A strict threshold helps flag unusually large allocation differences.
+if allocation_p_value < 0.001:
+    print("Warning: investigate the group allocation before trusting results.")
+else:
+    print("No evidence of a sample ratio mismatch at the 0.1% threshold.")
